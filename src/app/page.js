@@ -28,6 +28,16 @@ function LeadCaptureForm() {
       if (response.ok) {
         setStatus('success')
         setMessage('Thanks! Check your email to confirm your subscription.')
+        
+         // Send event to GTM
+  if (typeof window !== 'undefined' && window.dataLayer) {
+    window.dataLayer.push({
+      event: 'lead_form_submit',
+      formType: 'newsletter_signup',
+      userEmail: email,
+      userPhone: phone || 'not_provided'
+    })
+  }     
         setEmail('')
         setPhone('')
         setMarketing(false)
