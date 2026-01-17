@@ -1,5 +1,150 @@
+'use client'
+
+import { useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+
+function LeadCaptureForm() {
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [marketing, setMarketing] = useState(false)
+  const [status, setStatus] = useState('') // 'loading', 'success', 'error'
+  const [message, setMessage] = useState('')
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setStatus('loading')
+    setMessage('')
+
+    try {
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, phone, marketing }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setStatus('success')
+        setMessage('Thanks! Check your email to confirm your subscription.')
+        setEmail('')
+        setPhone('')
+        setMarketing(false)
+      } else {
+        setStatus('error')
+        setMessage(data.error || 'Something went wrong. Please try again.')
+      }
+    } catch (error) {
+      setStatus('error')
+      setMessage('Network error. Please try again.')
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Success/Error Messages */}
+      {status === 'success' && (
+        <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
+          {message}
+        </div>
+      )}
+      {status === 'error' && (
+        <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
+          {message}
+        </div>
+      )}
+
+      {/* Email and Phone Row */}
+      <div className="grid md:grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            Email Address *
+          </label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            placeholder="your.email@example.com"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition text-gray-900"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+            Phone Number (Optional)
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="07123 456789"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition text-gray-900"
+          />
+        </div>
+      </div>
+
+      {/* Marketing Opt-in Checkbox */}
+      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+        <label className="flex items-start cursor-pointer">
+          <input
+            type="checkbox"
+            checked={marketing}
+            onChange={(e) => setMarketing(e.target.checked)}
+            required
+            className="mt-1 h-5 w-5 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+          />
+          <span className="ml-3 text-sm text-gray-700">
+            <strong>Yes, I'd like to receive marketing communications.</strong> I agree to receive emails and SMS messages about health tips, test recommendations, and special offers. I understand I can unsubscribe at any time. *
+          </span>
+        </label>
+      </div>
+
+      {/* Privacy Notice */}
+      <p className="text-xs text-gray-500 text-center">
+        By submitting this form, you agree to our{' '}
+        <a href="/privacy" className="text-pink-600 hover:underline">Privacy Policy</a>
+        {' '}and{' '}
+        <a href="/terms" className="text-pink-600 hover:underline">Terms & Conditions</a>.
+        We'll never share your data with third parties.
+      </p>
+
+      {/* Submit Button */}
+      <button
+        type="submit"
+        disabled={status === 'loading'}
+        className="w-full bg-pink-600 text-white py-4 rounded-lg font-semibold text-lg hover:bg-pink-700 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {status === 'loading' ? 'Subscribing...' : 'Get Started - It\'s Free'}
+      </button>
+
+      {/* Trust Badges */}
+      <div className="flex flex-wrap justify-center items-center gap-6 pt-4 text-sm text-gray-500">
+        <div className="flex items-center">
+          <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+          </svg>
+          No spam, ever
+        </div>
+        <div className="flex items-center">
+          <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+          </svg>
+          Unsubscribe anytime
+        </div>
+        <div className="flex items-center">
+          <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+          </svg>
+          GDPR compliant
+        </div>
+      </div>
+    </form>
+  )
+}
 
 export default function Home() {
   return (
@@ -99,19 +244,19 @@ export default function Home() {
             <div className="grid md:grid-cols-3 gap-12">
               <div className="text-center">
                 <div className="bg-teal-100 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-teal-600 mx-auto mb-6">1</div>
-                <h3 className="text-xl font-bold mb-3 text-black">Order Your Test</h3>
+                <h3 className="text-xl font-bold mb-3">Order Your Test</h3>
                 <p className="text-gray-600">Choose from our curated selection of trusted providers. Kit delivered to your door next day.</p>
               </div>
               
               <div className="text-center">
                 <div className="bg-teal-100 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-teal-600 mx-auto mb-6">2</div>
-                <h3 className="text-xl font-bold mb-3 text-black">Take Your Sample</h3>
+                <h3 className="text-xl font-bold mb-3">Take Your Sample</h3>
                 <p className="text-gray-600">Simple finger-prick test at home. Post back using the prepaid envelope provided.</p>
               </div>
               
               <div className="text-center">
                 <div className="bg-teal-100 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-teal-600 mx-auto mb-6">3</div>
-                <h3 className="text-xl font-bold mb-3 text-black">Get Your Results</h3>
+                <h3 className="text-xl font-bold mb-3">Get Your Results</h3>
                 <p className="text-gray-600">Doctor-reviewed results within 48 hours. Clear explanations and next steps included.</p>
               </div>
             </div>
@@ -142,91 +287,7 @@ export default function Home() {
                 </p>
               </div>
 
-              <form className="space-y-6">
-                {/* Email and Phone Row */}
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      Email Address *
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      required
-                      placeholder="your.email@example.com"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition text-gray-900"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone Number (Optional)
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      placeholder="07123 456789"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition text-gray-900"
-                    />
-                  </div>
-                </div>
-
-                {/* Marketing Opt-in Checkbox */}
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                  <label className="flex items-start cursor-pointer">
-                    <input
-                      type="checkbox"
-                      name="marketing"
-                      required
-                      className="mt-1 h-5 w-5 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
-                    />
-                    <span className="ml-3 text-sm text-gray-700">
-                      <strong>Yes, I'd like to receive marketing communications.</strong> I agree to receive emails and SMS messages about health tips, test recommendations, and special offers. I understand I can unsubscribe at any time. *
-                    </span>
-                  </label>
-                </div>
-
-                {/* Privacy Notice */}
-                <p className="text-xs text-gray-500 text-center">
-                  By submitting this form, you agree to our{' '}
-                  <a href="/privacy" className="text-pink-600 hover:underline">Privacy Policy</a>
-                  {' '}and{' '}
-                  <a href="/terms" className="text-pink-600 hover:underline">Terms & Conditions</a>.
-                  We'll never share your data with third parties.
-                </p>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  className="w-full bg-pink-600 text-white py-4 rounded-lg font-semibold text-lg hover:bg-pink-700 transition shadow-lg"
-                >
-                  Get Started - It's Free
-                </button>
-
-                {/* Trust Badges */}
-                <div className="flex flex-wrap justify-center items-center gap-6 pt-4 text-sm text-gray-500">
-                  <div className="flex items-center">
-                    <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    No spam, ever
-                  </div>
-                  <div className="flex items-center">
-                    <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    Unsubscribe anytime
-                  </div>
-                  <div className="flex items-center">
-                    <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    GDPR compliant
-                  </div>
-                </div>
-              </form>
+              <LeadCaptureForm />
             </div>
           </div>
         </section>
