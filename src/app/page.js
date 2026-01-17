@@ -1,65 +1,238 @@
-import Image from "next/image";
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <>
+      <Header />
+      <main className="min-h-screen">
+        {/* Hero Section */}
+        <section className="bg-gradient-to-br from-pink-500 via-rose-600 to-pink-700 text-white">
+          <div className="max-w-7xl mx-auto px-4 py-8 md:py-14">
+            <div className="max-w-3xl mx-auto text-center">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+                Take Control of Your Health from Home
+              </h1>
+              <p className="text-lg md:text-xl mb-6 text-pink-50">
+                Compare the UK's leading at-home blood test providers. Fast results, doctor-reviewed, completely confidential.
+              </p>
+              <button className="bg-white text-pink-600 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-pink-50 transition shadow-lg">
+                Compare Top Tests
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Trust Indicators */}
+        <section className="bg-white py-12 border-b">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+              <div>
+                <div className="text-3xl font-bold text-black mb-2">50,000+</div>
+                <div className="text-gray-600">Tests Completed</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-black mb-2">48 Hours</div>
+                <div className="text-gray-600">Average Results</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-black mb-2">GMC Registered</div>
+                <div className="text-gray-600">Doctor Reviews</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-black mb-2">4.8★</div>
+                <div className="text-gray-600">Average Rating</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Popular Tests */}
+        <section className="py-20 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4">
+            <h2 className="text-4xl font-bold text-center mb-4 text-black">Popular Blood Tests</h2>
+            <p className="text-xl text-gray-600 text-center mb-12">Choose from our most requested health screens</p>
+            
+            <div className="grid md:grid-cols-3 gap-8">
+              {/* Test Card 1 */}
+              <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition">
+                <div className="text-teal-500 text-4xl mb-4">🩺</div>
+                <h3 className="text-2xl font-bold mb-3 text-black">General Health</h3>
+                <p className="text-gray-600 mb-6">Complete overview of your key health markers including cholesterol, liver, and kidney function.</p>
+                <div className="text-3xl font-bold text-black mb-4">From £39</div>
+                <button className="w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition">
+                  View Providers
+                </button>
+              </div>
+
+              {/* Test Card 2 */}
+              <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition border-2 border-pink-500">
+                <div className="bg-pink-100 text-pink-600 text-xs font-bold px-3 py-1 rounded-full inline-block mb-4">MOST POPULAR</div>
+                <div className="text-teal-500 text-4xl mb-4">⚡</div>
+                <h3 className="text-2xl font-bold mb-3 text-black">Hormone Panel</h3>
+                <p className="text-gray-600 mb-6">Comprehensive hormone testing including testosterone, thyroid, and cortisol levels.</p>
+                <div className="text-3xl font-bold text-black mb-4">From £79</div>
+                <button className="w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition">
+                  View Providers
+                </button>
+              </div>
+
+              {/* Test Card 3 */}
+              <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition">
+                <div className="text-teal-500 text-4xl mb-4">💪</div>
+                <h3 className="text-2xl font-bold mb-3 text-black">Vitamin Check</h3>
+                <p className="text-gray-600 mb-6">Test for vitamin D, B12, folate, and iron to optimize your energy and wellbeing.</p>
+                <div className="text-3xl font-bold text-black mb-4">From £49</div>
+                <button className="w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition">
+                  View Providers
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* How It Works */}
+        <section className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4">
+            <h2 className="text-4xl font-bold text-center mb-16 text-black">How It Works</h2>
+            
+            <div className="grid md:grid-cols-3 gap-12">
+              <div className="text-center">
+                <div className="bg-teal-100 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-teal-600 mx-auto mb-6">1</div>
+                <h3 className="text-xl font-bold mb-3 text-black">Order Your Test</h3>
+                <p className="text-gray-600">Choose from our curated selection of trusted providers. Kit delivered to your door next day.</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="bg-teal-100 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-teal-600 mx-auto mb-6">2</div>
+                <h3 className="text-xl font-bold mb-3 text-black">Take Your Sample</h3>
+                <p className="text-gray-600">Simple finger-prick test at home. Post back using the prepaid envelope provided.</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="bg-teal-100 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-teal-600 mx-auto mb-6">3</div>
+                <h3 className="text-xl font-bold mb-3 text-black">Get Your Results</h3>
+                <p className="text-gray-600">Doctor-reviewed results within 48 hours. Clear explanations and next steps included.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="bg-pink-600 text-white py-20">
+          <div className="max-w-4xl mx-auto px-4 text-center">
+            <h2 className="text-4xl font-bold mb-6">Ready to Start Your Health Journey?</h2>
+            <p className="text-xl mb-8 text-pink-100">Compare prices, read reviews, and find the perfect test for your needs.</p>
+            <button className="bg-white text-pink-600 px-10 py-4 rounded-lg font-semibold text-lg hover:bg-pink-50 transition shadow-lg">
+              Browse All Tests
+            </button>
+          </div>
+        </section>
+
+        {/* Lead Capture Form */}
+        <section className="bg-gradient-to-r from-gray-50 to-gray-100 py-16">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                  Get Exclusive Health Insights & Test Offers
+                </h2>
+                <p className="text-lg text-gray-600">
+                  Join thousands receiving expert health tips, exclusive discounts, and early access to new tests.
+                </p>
+              </div>
+
+              <form className="space-y-6">
+                {/* Email and Phone Row */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      required
+                      placeholder="your.email@example.com"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                      Phone Number (Optional)
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      placeholder="07123 456789"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                    />
+                  </div>
+                </div>
+
+                {/* Marketing Opt-in Checkbox */}
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                  <label className="flex items-start cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="marketing"
+                      required
+                      className="mt-1 h-5 w-5 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+                    />
+                    <span className="ml-3 text-sm text-gray-700">
+                      <strong>Yes, I'd like to receive marketing communications.</strong> I agree to receive emails and SMS messages about health tips, test recommendations, and special offers. I understand I can unsubscribe at any time. *
+                    </span>
+                  </label>
+                </div>
+
+                {/* Privacy Notice */}
+                <p className="text-xs text-gray-500 text-center">
+                  By submitting this form, you agree to our{' '}
+                  <a href="/privacy" className="text-pink-600 hover:underline">Privacy Policy</a>
+                  {' '}and{' '}
+                  <a href="/terms" className="text-pink-600 hover:underline">Terms & Conditions</a>.
+                  We'll never share your data with third parties.
+                </p>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  className="w-full bg-pink-600 text-white py-4 rounded-lg font-semibold text-lg hover:bg-pink-700 transition shadow-lg"
+                >
+                  Get Started - It's Free
+                </button>
+
+                {/* Trust Badges */}
+                <div className="flex flex-wrap justify-center items-center gap-6 pt-4 text-sm text-gray-500">
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    No spam, ever
+                  </div>
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    Unsubscribe anytime
+                  </div>
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    GDPR compliant
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
       </main>
-    </div>
+      
+      <Footer />
+    </>
   );
 }
