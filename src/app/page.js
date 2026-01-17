@@ -155,7 +155,7 @@ export default function Home() {
                       name="email"
                       required
                       placeholder="your.email@example.com"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition text-gray-900"
                     />
                   </div>
 
@@ -168,7 +168,7 @@ export default function Home() {
                       id="phone"
                       name="phone"
                       placeholder="07123 456789"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition text-gray-900"
                     />
                   </div>
                 </div>
