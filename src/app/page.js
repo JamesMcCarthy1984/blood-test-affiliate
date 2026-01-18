@@ -171,9 +171,9 @@ export default function Home() {
               <p className="text-lg md:text-xl mb-6 text-pink-50">
                 Compare the UK's leading at-home blood test providers. Fast results, doctor-reviewed, completely confidential.
               </p>
-              <button className="bg-white text-pink-600 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-pink-50 transition shadow-lg">
+              <a href="/comparison" className="inline-block bg-white text-pink-600 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-pink-50 transition shadow-lg">
                 Compare Top Tests
-              </button>
+              </a>
             </div>
           </div>
         </section>
