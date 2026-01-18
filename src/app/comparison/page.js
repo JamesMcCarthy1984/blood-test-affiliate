@@ -1,10 +1,9 @@
+'use client'
+
+import { useEffect } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-
-export const metadata = {
-  title: "Blood Test Provider Comparison | BloodTestHub",
-  description: "Compare the UK's top at-home blood test providers. See prices, turnaround times, and reviews side-by-side.",
-}
+import { trackVisitor, trackPageVisit, trackEvent } from '@/lib/tracking'
 
 export default function ComparisonPage() {
   const providers = [
@@ -52,6 +51,19 @@ export default function ComparisonPage() {
       cons: ["Higher prices", "Limited UK range"]
     }
   ]
+
+  useEffect(() => {
+    trackVisitor()
+    trackPageVisit('Comparison Table')
+  }, [])
+
+  // Track when user clicks "View Tests"
+  const handleProviderClick = (providerName) => {
+    trackEvent('provider_click', { 
+      provider: providerName,
+      page: 'comparison' 
+    })
+  }
 
   return (
     <>
@@ -112,7 +124,10 @@ export default function ComparisonPage() {
                         <div className="text-gray-700">{provider.tests}</div>
                       </td>
                       <td className="px-6 py-6">
-                        <a href={provider.url} className="bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition inline-block">
+                        <a 
+                          href={provider.url} 
+                          onClick={() => handleProviderClick(provider.name)}
+                          className="bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition inline-block">
                           View Tests
                         </a>
                       </td>
@@ -151,7 +166,10 @@ export default function ComparisonPage() {
                     <span className="text-black">{provider.turnaround}</span>
                   </div>
                 </div>
-                <a href={provider.url} className="block w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition text-center">
+                <a 
+                  href={provider.url} 
+                  onClick={() => handleProviderClick(provider.name)}
+                  className="block w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition text-center">
                   View Tests
                 </a>
               </div>

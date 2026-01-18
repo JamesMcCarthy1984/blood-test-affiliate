@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { trackVisitor, trackPageVisit, trackEvent, saveLead } from '@/lib/tracking'
 
 function LeadCaptureForm() {
   const [email, setEmail] = useState('')
@@ -17,6 +18,17 @@ function LeadCaptureForm() {
     setMessage('')
 
     try {
+      // Track form start event
+      await trackEvent('form_start', { page: 'home', form: 'lead_capture' })
+
+      // Save to Supabase first
+      const supabaseResult = await saveLead(email, phone, marketing)
+      
+      if (!supabaseResult.success) {
+        console.error('Supabase save failed:', supabaseResult.error)
+      }
+
+      // Then save to Mailchimp
       const response = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -29,25 +41,45 @@ function LeadCaptureForm() {
         setStatus('success')
         setMessage('Thanks! Check your email to confirm your subscription.')
         
-  // Send event to GTM
-  if (typeof window !== 'undefined' && window.dataLayer) {
-    window.dataLayer.push({
-      event: 'lead_form_submit',
-      formType: 'newsletter_signup',
-      userEmail: email,
-      userPhone: phone || 'not_provided'
-    })
-  }         
+        // Send event to GTM
+        if (typeof window !== 'undefined' && window.dataLayer) {
+          window.dataLayer.push({
+            event: 'lead_form_submit',
+            formType: 'newsletter_signup',
+            userEmail: email,
+            userPhone: phone || 'not_provided'
+          })
+        }
+        
+        // Track successful submission
+        await trackEvent('form_submit_success', { 
+          page: 'home', 
+          email: email,
+          has_phone: !!phone 
+        })
+        
         setEmail('')
         setPhone('')
         setMarketing(false)
       } else {
         setStatus('error')
         setMessage(data.error || 'Something went wrong. Please try again.')
+        
+        // Track failed submission
+        await trackEvent('form_submit_error', { 
+          page: 'home', 
+          error: data.error 
+        })
       }
     } catch (error) {
       setStatus('error')
       setMessage('Network error. Please try again.')
+      
+      // Track network error
+      await trackEvent('form_submit_error', { 
+        page: 'home', 
+        error: 'network_error' 
+      })
     }
   }
 
@@ -157,18 +189,35 @@ function LeadCaptureForm() {
 }
 
 export default function Home() {
+  useEffect(() => {
+    // Track visitor and page visit on mount
+    trackVisitor()
+    trackPageVisit('Home')
+  }, [])
+
   return (
     <>
       <Header />
       <main className="min-h-screen">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-br from-pink-500 via-rose-600 to-pink-700 text-white">
-          <div className="max-w-7xl mx-auto px-4 py-8 md:py-14">
+        {/* Hero Section with Background Image */}
+        <section className="relative bg-gradient-to-br from-pink-500 via-rose-600 to-pink-700 text-white overflow-hidden">
+          {/* Background Image with Overlay */}
+          <div className="absolute inset-0">
+            <img
+              src="/images/hero-blood-test.jpg"
+              alt="Blood test laboratory"
+              className="w-full h-full object-cover opacity-20"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-pink-600/90 via-rose-700/90 to-pink-800/90"></div>
+          </div>
+
+          {/* Content */}
+          <div className="relative max-w-7xl mx-auto px-4 py-8 md:py-14">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight drop-shadow-lg">
                 Take Control of Your Health from Home
               </h1>
-              <p className="text-lg md:text-xl mb-6 text-pink-50">
+              <p className="text-lg md:text-xl mb-6 text-pink-50 drop-shadow">
                 Compare the UK's leading at-home blood test providers. Fast results, doctor-reviewed, completely confidential.
               </p>
               <a href="/comparison" className="inline-block bg-white text-pink-600 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-pink-50 transition shadow-lg">
@@ -217,7 +266,7 @@ export default function Home() {
                 <div className="text-3xl font-bold text-black mb-4">From £39</div>
                 <a href="/comparison" className="block w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition text-center">
                   View Providers
-                  </a>
+                </a>
               </div>
 
               {/* Test Card 2 */}
@@ -229,7 +278,7 @@ export default function Home() {
                 <div className="text-3xl font-bold text-black mb-4">From £79</div>
                 <a href="/comparison" className="block w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition text-center">
                   View Providers
-                  </a>
+                </a>
               </div>
 
               {/* Test Card 3 */}
@@ -240,7 +289,7 @@ export default function Home() {
                 <div className="text-3xl font-bold text-black mb-4">From £49</div>
                 <a href="/comparison" className="block w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition text-center">
                   View Providers
-                  </a>
+                </a>
               </div>
             </div>
           </div>
@@ -278,9 +327,9 @@ export default function Home() {
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 className="text-4xl font-bold mb-6">Ready to Start Your Health Journey?</h2>
             <p className="text-xl mb-8 text-pink-100">Compare prices, read reviews, and find the perfect test for your needs.</p>
-            <button className="bg-white text-pink-600 px-10 py-4 rounded-lg font-semibold text-lg hover:bg-pink-50 transition shadow-lg">
+            <a href="/comparison" className="inline-block bg-white text-pink-600 px-10 py-4 rounded-lg font-semibold text-lg hover:bg-pink-50 transition shadow-lg">
               Browse All Tests
-            </button>
+            </a>
           </div>
         </section>
 
