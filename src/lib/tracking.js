@@ -1,144 +1,132 @@
-import { supabase } from './supabase'
+const SUPABASE_URL = 'https://wvqfdypifomlxxtijmam.supabase.co'
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind2cWZkeXBpZm9tbHh4dGlqbWFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NTg4MzgsImV4cCI6MjA4NDMzNDgzOH0.sCVGNI6WVJGd5UfIW1g0o4nfO_RMehI6e6cBJsgiGHI'
 
-// Generate or get visitor ID from localStorage
+const headers = {
+  'apikey': SUPABASE_KEY,
+  'Authorization': `Bearer ${SUPABASE_KEY}`,
+  'Content-Type': 'application/json',
+  'Prefer': 'return=representation'
+}
+
 export function getVisitorId() {
   if (typeof window === 'undefined') return null
-  
   let visitorId = localStorage.getItem('visitor_id')
-  
   if (!visitorId) {
     visitorId = 'v_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
     localStorage.setItem('visitor_id', visitorId)
   }
-  
   return visitorId
 }
 
-// Get UTM parameters from URL
-export function getUtmParams() {
-  if (typeof window === 'undefined') return {}
-  
-  const params = new URLSearchParams(window.location.search)
-  return {
-    utm_source: params.get('utm_source'),
-    utm_medium: params.get('utm_medium'),
-    utm_campaign: params.get('utm_campaign'),
-    utm_content: params.get('utm_content'),
-    utm_term: params.get('utm_term'),
-  }
-}
-
-// Get device info
-export function getDeviceInfo() {
-  if (typeof window === 'undefined') return {}
-  
-  const ua = navigator.userAgent
-  let deviceType = 'desktop'
-  
-  if (/mobile/i.test(ua)) deviceType = 'mobile'
-  else if (/tablet/i.test(ua)) deviceType = 'tablet'
-  
-  let browser = 'unknown'
-  if (ua.includes('Chrome')) browser = 'Chrome'
-  else if (ua.includes('Safari')) browser = 'Safari'
-  else if (ua.includes('Firefox')) browser = 'Firefox'
-  else if (ua.includes('Edge')) browser = 'Edge'
-  
-  return { deviceType, browser }
-}
-
-// Initialize or update visitor
 export async function trackVisitor() {
   const visitorId = getVisitorId()
   if (!visitorId) return
-  
-  const utmParams = getUtmParams()
-  const deviceInfo = getDeviceInfo()
-  
-  // Check if visitor exists
-  const { data: existingVisitor } = await supabase
-    .from('visitors')
-    .select('visitor_id')
-    .eq('visitor_id', visitorId)
-    .single()
-  
-  if (existingVisitor) {
-    // Update last visit
-    await supabase
-      .from('visitors')
-      .update({ last_visit: new Date().toISOString() })
-      .eq('visitor_id', visitorId)
-  } else {
+
+  try {
+    // Check if visitor exists
+    const checkRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/visitors?visitor_id=eq.${visitorId}&select=visitor_id`,
+      { headers }
+    )
+    
+    if (checkRes.ok) {
+      const data = await checkRes.json()
+      if (data.length > 0) {
+        // Update last visit
+        await fetch(
+          `${SUPABASE_URL}/rest/v1/visitors?visitor_id=eq.${visitorId}`,
+          {
+            method: 'PATCH',
+            headers,
+            body: JSON.stringify({ last_visit: new Date().toISOString() })
+          }
+        )
+        return visitorId
+      }
+    }
+
     // Create new visitor
-    await supabase
-      .from('visitors')
-      .insert({
+    await fetch(`${SUPABASE_URL}/rest/v1/visitors`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
         visitor_id: visitorId,
         referrer: document.referrer || null,
         landing_page: window.location.pathname,
-        ...utmParams,
-        ...deviceInfo,
+        device_type: /mobile/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
+        browser: navigator.userAgent.includes('Chrome') ? 'Chrome' : 'Other'
       })
+    })
+
+    return visitorId
+  } catch (error) {
+    console.error('Error tracking visitor:', error)
   }
-  
-  return visitorId
 }
 
-// Track page visit
 export async function trackPageVisit(pageTitle) {
   const visitorId = getVisitorId()
   if (!visitorId) return
-  
-  const { data, error } = await supabase
-    .from('page_visits')
-    .insert({
-      visitor_id: visitorId,
-      page_url: window.location.pathname,
-      page_title: pageTitle || document.title,
+
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/page_visits`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        visitor_id: visitorId,
+        page_url: window.location.pathname,
+        page_title: pageTitle || document.title
+      })
     })
-  
-  if (error) console.error('Error tracking page visit:', error)
-  
-  return data
+  } catch (error) {
+    console.error('Error tracking page visit:', error)
+  }
 }
 
-// Track custom event
 export async function trackEvent(eventType, eventData = {}) {
   const visitorId = getVisitorId()
   if (!visitorId) return
-  
-  const { data, error } = await supabase
-    .from('events')
-    .insert({
-      visitor_id: visitorId,
-      event_type: eventType,
-      event_data: eventData,
+
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/events`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        visitor_id: visitorId,
+        event_type: eventType,
+        event_data: eventData
+      })
     })
-  
-  if (error) console.error('Error tracking event:', error)
-  
-  return data
+  } catch (error) {
+    console.error('Error tracking event:', error)
+  }
 }
 
-// Save lead (form submission)
 export async function saveLead(email, phone, marketingConsent) {
   const visitorId = getVisitorId()
   if (!visitorId) return
-  
-  const { data, error } = await supabase
-    .from('leads')
-    .insert({
-      visitor_id: visitorId,
-      email: email,
-      phone: phone || null,
-      marketing_consent: marketingConsent,
-      source_page: window.location.pathname,
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/leads`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        visitor_id: visitorId,
+        email: email,
+        phone: phone || null,
+        marketing_consent: marketingConsent,
+        source_page: window.location.pathname
+      })
     })
-  
-  if (error) {
+
+    if (res.ok) {
+      return { success: true }
+    } else {
+      const error = await res.json()
+      return { success: false, error }
+    }
+  } catch (error) {
     console.error('Error saving lead:', error)
     return { success: false, error }
   }
-  
-  return { success: true, data }
 }

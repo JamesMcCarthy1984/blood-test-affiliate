@@ -190,9 +190,11 @@ function LeadCaptureForm() {
 
 export default function Home() {
   useEffect(() => {
-    // Track visitor and page visit on mount
-    trackVisitor()
-    trackPageVisit('Home')
+    const initTracking = async () => {
+      await trackVisitor()  // Wait for visitor to be created first
+      await trackPageVisit('Home')  // Then track page visit
+    }
+    initTracking()
   }, [])
 
   return (

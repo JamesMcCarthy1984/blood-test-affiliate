@@ -1,10 +1,16 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Hardcoded for testing - NEVER commit this to GitHub
-const supabaseUrl = 'https://fjdzzvtzjztwevqxiqe.supabase.co'
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqZHp6dnR6anp0d2V2cXF4aXFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3MzAxNTQsImV4cCI6MjA4NDMwNjE1NH0.TLRxb5godvoGU2ARFgIXyd8WeIU8aPHyxd4TPpobzG4'
+const supabaseUrl = 'https://wvqfdypifomlxxtijmam.supabase.co'
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind2cWZkeXBpZm9tbHh4dGlqbWFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NTg4MzgsImV4cCI6MjA4NDMzNDgzOH0.sCVGNI6WVJGd5UfIW1g0o4nfO_RMehI6e6cBJsgiGHI'
 
 console.log('Supabase URL:', supabaseUrl)
-console.log('Supabase Key:', supabaseAnonKey ? 'Present' : 'Missing')
+console.log('Supabase Key:', supabaseAnonKey)
+console.log('Key length:', supabaseAnonKey?.length)
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase credentials!')
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+console.log('Supabase client created:', supabase)
