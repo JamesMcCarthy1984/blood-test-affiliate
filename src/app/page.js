@@ -29,7 +29,7 @@ function LeadCaptureForm() {
         setStatus('success')
         setMessage('Thanks! Check your email to confirm your subscription.')
         
-         // Send event to GTM
+  // Send event to GTM
   if (typeof window !== 'undefined' && window.dataLayer) {
     window.dataLayer.push({
       event: 'lead_form_submit',
@@ -37,7 +37,7 @@ function LeadCaptureForm() {
       userEmail: email,
       userPhone: phone || 'not_provided'
     })
-  }     
+  }         
         setEmail('')
         setPhone('')
         setMarketing(false)
@@ -215,9 +215,9 @@ export default function Home() {
                 <h3 className="text-2xl font-bold mb-3 text-black">General Health</h3>
                 <p className="text-gray-600 mb-6">Complete overview of your key health markers including cholesterol, liver, and kidney function.</p>
                 <div className="text-3xl font-bold text-black mb-4">From £39</div>
-                <button className="w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition">
+                <a href="/comparison" className="block w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition text-center">
                   View Providers
-                </button>
+                  </a>
               </div>
 
               {/* Test Card 2 */}
@@ -227,9 +227,9 @@ export default function Home() {
                 <h3 className="text-2xl font-bold mb-3 text-black">Hormone Panel</h3>
                 <p className="text-gray-600 mb-6">Comprehensive hormone testing including testosterone, thyroid, and cortisol levels.</p>
                 <div className="text-3xl font-bold text-black mb-4">From £79</div>
-                <button className="w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition">
+                <a href="/comparison" className="block w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition text-center">
                   View Providers
-                </button>
+                  </a>
               </div>
 
               {/* Test Card 3 */}
@@ -238,9 +238,9 @@ export default function Home() {
                 <h3 className="text-2xl font-bold mb-3 text-black">Vitamin Check</h3>
                 <p className="text-gray-600 mb-6">Test for vitamin D, B12, folate, and iron to optimize your energy and wellbeing.</p>
                 <div className="text-3xl font-bold text-black mb-4">From £49</div>
-                <button className="w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition">
+                <a href="/comparison" className="block w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition text-center">
                   View Providers
-                </button>
+                  </a>
               </div>
             </div>
           </div>
