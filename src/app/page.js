@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { trackVisitor, trackPageVisit, trackEvent, saveLead } from '@/lib/tracking'
+import { trackVisitor, trackPageVisit, trackEvent, saveLead, captureUTMParameters } from '@/lib/tracking'
 
 function LeadCaptureForm() {
   const [email, setEmail] = useState('')
@@ -191,7 +191,8 @@ function LeadCaptureForm() {
 export default function Home() {
   useEffect(() => {
     const initTracking = async () => {
-      await trackVisitor()  // Wait for visitor to be created first
+      captureUTMParameters()  // Capture UTMs FIRST (synchronous, no await needed)
+      await trackVisitor()  // Wait for visitor to be created
       await trackPageVisit('Home')  // Then track page visit
     }
     initTracking()

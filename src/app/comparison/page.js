@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { trackVisitor, trackPageVisit, trackEvent } from '@/lib/tracking'
+import { trackVisitor, trackPageVisit, trackEvent, captureUTMParameters } from '@/lib/tracking'
 
 export default function ComparisonPage() {
   const providers = [
@@ -53,8 +53,12 @@ export default function ComparisonPage() {
   ]
 
   useEffect(() => {
-    trackVisitor()
-    trackPageVisit('Comparison Table')
+    const initTracking = async () => {
+      captureUTMParameters()  // Capture UTMs FIRST
+      await trackVisitor()
+      await trackPageVisit('Comparison Table')
+    }
+    initTracking()
   }, [])
 
   // Track when user clicks "View Tests"
