@@ -16,19 +16,20 @@ export function getOrCreateVisitorId() {
   let expiry = localStorage.getItem(VISITOR_ID_EXPIRY);
   
   if (visitorId && expiry && Date.now() < parseInt(expiry)) {
+    console.log('👤 Existing Visitor ID:', visitorId);
     return visitorId;
   }
   
   visitorId = crypto.randomUUID();
-  const expiryTime = Date.now() + (730 * 24 * 60 * 60 * 1000); // 2 years
+  const expiryTime = Date.now() + (730 * 24 * 60 * 60 * 1000);
   
   localStorage.setItem(VISITOR_ID_KEY, visitorId);
   localStorage.setItem(VISITOR_ID_EXPIRY, expiryTime.toString());
   
+  console.log('👤 New Visitor ID Created:', visitorId);
   return visitorId;
 }
 
-// Backward compatibility alias
 export function getVisitorId() {
   return getOrCreateVisitorId();
 }
@@ -37,7 +38,7 @@ export function getOrCreateSessionId() {
   if (typeof window === 'undefined') return null;
   
   const SESSION_ID_KEY = 'bth_session_id';
-  const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+  const SESSION_TIMEOUT = 30 * 60 * 1000;
   
   const stored = sessionStorage.getItem(SESSION_ID_KEY);
   
@@ -48,6 +49,7 @@ export function getOrCreateSessionId() {
         sessionId,
         timestamp: Date.now()
       }));
+      console.log('🔄 Existing Session ID:', sessionId);
       return sessionId;
     }
   }
@@ -58,6 +60,7 @@ export function getOrCreateSessionId() {
     timestamp: Date.now()
   }));
   
+  console.log('🆕 New Session ID Created:', sessionId);
   return sessionId;
 }
 
@@ -74,8 +77,13 @@ export function captureUTMParameters() {
     utm_content: urlParams.get('utm_content')
   };
   
+  console.log('🏷️ UTM Parameters captured:', utmParams);
+  
   if (utmParams.utm_source) {
     sessionStorage.setItem('bth_utm_params', JSON.stringify(utmParams));
+    console.log('✅ UTMs stored in sessionStorage');
+  } else {
+    console.log('ℹ️ No UTM parameters found in URL');
   }
   
   return utmParams;
@@ -85,22 +93,24 @@ export function getStoredUTMParameters() {
   if (typeof window === 'undefined') return {};
   
   const stored = sessionStorage.getItem('bth_utm_params');
-  return stored ? JSON.parse(stored) : {};
+  const params = stored ? JSON.parse(stored) : {};
+  console.log('📦 Retrieved stored UTMs:', params);
+  return params;
 }
 
-// Backward compatibility - keeps trackVisitor working
 export async function trackVisitor() {
   const visitorId = getOrCreateVisitorId();
   if (!visitorId) return;
   
-  // This now happens automatically in trackEvent/trackPageVisit
-  // Just return the visitorId for compatibility
+  console.log('👤 trackVisitor called with ID:', visitorId);
   return visitorId;
 }
 
 export async function trackPageVisit(pageTitle) {
   const visitorId = getOrCreateVisitorId();
   const sessionId = getOrCreateSessionId();
+  
+  console.log('📄 Tracking page visit:', { visitorId, sessionId, pageTitle });
   
   if (!visitorId) return;
   
@@ -114,10 +124,14 @@ export async function trackPageVisit(pageTitle) {
         page_title: pageTitle || document.title
       }]);
     
-    if (error) console.error('Error tracking page visit:', error);
+    if (error) {
+      console.error('❌ Error tracking page visit:', error);
+    } else {
+      console.log('✅ Page visit tracked successfully:', data);
+    }
     return data;
   } catch (error) {
-    console.error('Error tracking page visit:', error);
+    console.error('❌ Exception tracking page visit:', error);
   }
 }
 
@@ -125,6 +139,15 @@ export async function trackEvent(eventType, eventData = {}) {
   const visitorId = getOrCreateVisitorId();
   const sessionId = getOrCreateSessionId();
   const utmParams = getStoredUTMParameters();
+  
+  console.log('🔍 Tracking Event Debug:', {
+    eventType,
+    visitorId,
+    sessionId,
+    utmParams,
+    referrer: document.referrer,
+    pageUrl: window.location.href
+  });
   
   const payload = {
     event_type: eventType,
@@ -143,17 +166,25 @@ export async function trackEvent(eventType, eventData = {}) {
     }
   };
   
+  console.log('📤 Sending payload to Supabase:', payload);
+  
   const { data, error } = await supabase
     .from('events')
     .insert([payload]);
     
-  if (error) console.error('Error tracking event:', error);
+  if (error) {
+    console.error('❌ Error tracking event:', error);
+  } else {
+    console.log('✅ Event tracked successfully:', data);
+  }
   
   return data;
 }
 
 export async function saveLead(email, phone, marketingConsent) {
   const visitorId = getOrCreateVisitorId();
+  
+  console.log('💾 Saving lead:', { visitorId, email });
   
   if (!visitorId) return;
   
@@ -169,13 +200,14 @@ export async function saveLead(email, phone, marketingConsent) {
       }]);
     
     if (error) {
-      console.error('Error saving lead:', error);
+      console.error('❌ Error saving lead:', error);
       return { success: false, error };
     }
     
+    console.log('✅ Lead saved successfully:', data);
     return { success: true, data };
   } catch (error) {
-    console.error('Error saving lead:', error);
+    console.error('❌ Exception saving lead:', error);
     return { success: false, error };
   }
 }
