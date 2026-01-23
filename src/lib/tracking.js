@@ -21,7 +21,7 @@ export function getOrCreateVisitorId() {
   }
   
   visitorId = crypto.randomUUID();
-  const expiryTime = Date.now() + (730 * 24 * 60 * 60 * 1000);
+  const expiryTime = Date.now() + (730 * 24 * 60 * 60 * 1000); // 2 years
   
   localStorage.setItem(VISITOR_ID_KEY, visitorId);
   localStorage.setItem(VISITOR_ID_EXPIRY, expiryTime.toString());
@@ -38,7 +38,7 @@ export function getOrCreateSessionId() {
   if (typeof window === 'undefined') return null;
   
   const SESSION_ID_KEY = 'bth_session_id';
-  const SESSION_TIMEOUT = 30 * 60 * 1000;
+  const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
   
   const stored = sessionStorage.getItem(SESSION_ID_KEY);
   
@@ -109,8 +109,9 @@ export async function trackVisitor() {
 export async function trackPageVisit(pageTitle) {
   const visitorId = getOrCreateVisitorId();
   const sessionId = getOrCreateSessionId();
+  const utmParams = getStoredUTMParameters();
   
-  console.log('📄 Tracking page visit:', { visitorId, sessionId, pageTitle });
+  console.log('📄 Tracking page visit:', { visitorId, sessionId, pageTitle, utmParams });
   
   if (!visitorId) return;
   
@@ -121,7 +122,13 @@ export async function trackPageVisit(pageTitle) {
         visitor_id: visitorId,
         session_id: sessionId,
         page_url: window.location.pathname,
-        page_title: pageTitle || document.title
+        page_title: pageTitle || document.title,
+        utm_source: utmParams.utm_source || null,
+        utm_medium: utmParams.utm_medium || null,
+        utm_campaign: utmParams.utm_campaign || null,
+        utm_term: utmParams.utm_term || null,
+        utm_content: utmParams.utm_content || null,
+        referrer: document.referrer || null
       }]);
     
     if (error) {
