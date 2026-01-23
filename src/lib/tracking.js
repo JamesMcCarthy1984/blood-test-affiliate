@@ -190,8 +190,10 @@ export async function trackEvent(eventType, eventData = {}) {
 
 export async function saveLead(email, phone, marketingConsent) {
   const visitorId = getOrCreateVisitorId();
+  const sessionId = getOrCreateSessionId();
+  const utmParams = getStoredUTMParameters();
   
-  console.log('💾 Saving lead:', { visitorId, email });
+  console.log('💾 Saving lead:', { visitorId, sessionId, email, utmParams });
   
   if (!visitorId) return;
   
@@ -200,10 +202,17 @@ export async function saveLead(email, phone, marketingConsent) {
       .from('leads')
       .insert([{
         visitor_id: visitorId,
+        session_id: sessionId,
         email: email,
         phone: phone || null,
         marketing_consent: marketingConsent,
-        source_page: window.location.pathname
+        source_page: window.location.pathname,
+        utm_source: utmParams.utm_source || null,
+        utm_medium: utmParams.utm_medium || null,
+        utm_campaign: utmParams.utm_campaign || null,
+        utm_term: utmParams.utm_term || null,
+        utm_content: utmParams.utm_content || null,
+        referrer: document.referrer || null
       }]);
     
     if (error) {
