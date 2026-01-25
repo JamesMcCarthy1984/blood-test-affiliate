@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { trackEvent, trackCookieConsent } from '@/lib/tracking'
+import { trackEvent } from '@/lib/tracking'
 
 export default function Cookiebot() {
   useEffect(() => {
@@ -23,9 +23,18 @@ export default function Cookiebot() {
     }
     
     // Track when user accepts cookies
-    const handleAccept = () => {
+    const handleAccept = async () => {
       console.log('🍪 Cookiebot accepted - tracking consent')
-      trackCookieConsent()  // Add this back
+      
+      // Use dynamic import to avoid Next.js static analysis issues
+      try {
+        const { trackCookieConsent } = await import('@/lib/tracking')
+        await trackCookieConsent()
+      } catch (error) {
+        console.error('Error loading trackCookieConsent:', error)
+      }
+      
+      // Also track as event
       trackEvent('cookie_consent_accepted', { consent_type: 'cookie' })
     }
     
