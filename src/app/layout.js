@@ -1,5 +1,6 @@
 import './globals.css'
 import GoogleAnalytics from './GoogleAnalytics'
+import Cookiebot from './Cookiebot'
 
 export const metadata = {
   title: 'BloodTestHub - Compare At-Home Blood Test Providers',
@@ -10,20 +11,22 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* Cookiebot - Must load first */}
+        {/* Cookiebot - Must load first, synchronously for blocking mode */}
         <script 
           id="Cookiebot" 
           src="https://consent.cookiebot.com/uc.js" 
           data-cbid="81334869-f43d-4e33-8362-5c98fa5a65ec" 
           data-blockingmode="auto" 
           type="text/javascript"
-          async
         />
         
         {/* Google Analytics - Will be blocked until consent */}
         <GoogleAnalytics />
       </head>
       <body>
+        {/* Cookiebot fallback - ensures it loads on client-side navigation */}
+        <Cookiebot />
+        
         {/* GTM noscript */}
         <noscript>
           <iframe 

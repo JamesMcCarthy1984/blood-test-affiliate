@@ -28,6 +28,9 @@ body {
 /* Ensure Cookiebot banner appears above all content */
 #CybotCookiebotDialog {
   z-index: 999999 !important;
+  position: fixed !important;
+  display: block !important;
+  visibility: visible !important;
 }
 
 #CybotCookiebotDialogBodyLevelButtonLevelButton {
@@ -36,5 +39,21 @@ body {
 
 /* Ensure Cookiebot banner is visible on all screen sizes */
 #CybotCookiebotDialogBodyContent {
+  z-index: 999999 !important;
+}
+
+/* Additional Cookiebot visibility rules */
+.CybotCookiebotDialog {
+  z-index: 999999 !important;
+  position: fixed !important;
+  display: block !important;
+  visibility: visible !important;
+}
+
+.CybotCookiebotDialogBody {
+  z-index: 999999 !important;
+}
+
+.CybotCookiebotDialogBodyButtons {
   z-index: 999999 !important;
 }
