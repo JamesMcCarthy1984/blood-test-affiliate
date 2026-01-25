@@ -24,3 +24,17 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Ensure Cookiebot banner appears above all content */
+#CybotCookiebotDialog {
+  z-index: 999999 !important;
+}
+
+#CybotCookiebotDialogBodyLevelButtonLevelButton {
+  z-index: 999999 !important;
+}
+
+/* Ensure Cookiebot banner is visible on all screen sizes */
+#CybotCookiebotDialogBodyContent {
+  z-index: 999999 !important;
+}

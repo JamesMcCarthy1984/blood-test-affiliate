@@ -17,6 +17,7 @@ export default function RootLayout({ children }) {
           data-cbid="81334869-f43d-4e33-8362-5c98fa5a65ec" 
           data-blockingmode="auto" 
           type="text/javascript"
+          async
         />
         
         {/* Google Analytics - Will be blocked until consent */}
