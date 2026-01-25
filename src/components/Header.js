@@ -1,5 +1,4 @@
 'use client'
-
 import { useState } from 'react'
 
 export default function Header() {
@@ -20,8 +19,8 @@ export default function Header() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
-            <a href="/food-intolerance" className="text-gray-700 hover:text-pink-600 font-medium transition">
-              Food Intolerance
+            <a href="/hormones" className="text-gray-700 hover:text-pink-600 font-medium transition">
+              Hormones
             </a>
             <a href="/mens" className="text-gray-700 hover:text-pink-600 font-medium transition">
               Men's
@@ -29,17 +28,11 @@ export default function Header() {
             <a href="/womens" className="text-gray-700 hover:text-pink-600 font-medium transition">
               Women's
             </a>
-            <a href="/vitamin" className="text-gray-700 hover:text-pink-600 font-medium transition">
-              Vitamin
+            <a href="/vitamins" className="text-gray-700 hover:text-pink-600 font-medium transition">
+              Vitamins
             </a>
-            <a href="/offers" className="text-gray-700 hover:text-pink-600 font-medium transition">
-              Offers
-            </a>
-            <a href="/about" className="text-gray-700 hover:text-pink-600 font-medium transition">
-              About Us
-            </a>
-            <a href="/contact" className="text-gray-700 hover:text-pink-600 font-medium transition">
-              Contact Us
+            <a href="/other" className="text-gray-700 hover:text-pink-600 font-medium transition">
+              Other
             </a>
           </div>
 
@@ -72,8 +65,8 @@ export default function Header() {
         {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden pb-4 border-t pt-4">
-            <a href="/food-intolerance" className="block py-3 text-gray-700 hover:text-pink-600 font-medium">
-              Food Intolerance
+            <a href="/hormones" className="block py-3 text-gray-700 hover:text-pink-600 font-medium">
+              Hormones
             </a>
             <a href="/mens" className="block py-3 text-gray-700 hover:text-pink-600 font-medium">
               Men's
@@ -81,17 +74,11 @@ export default function Header() {
             <a href="/womens" className="block py-3 text-gray-700 hover:text-pink-600 font-medium">
               Women's
             </a>
-            <a href="/vitamin" className="block py-3 text-gray-700 hover:text-pink-600 font-medium">
-              Vitamin
+            <a href="/vitamins" className="block py-3 text-gray-700 hover:text-pink-600 font-medium">
+              Vitamins
             </a>
-            <a href="/offers" className="block py-3 text-gray-700 hover:text-pink-600 font-medium">
-              Offers
-            </a>
-            <a href="/about" className="block py-3 text-gray-700 hover:text-pink-600 font-medium">
-              About Us
-            </a>
-            <a href="/contact" className="block py-3 text-gray-700 hover:text-pink-600 font-medium">
-              Contact Us
+            <a href="/other" className="block py-3 text-gray-700 hover:text-pink-600 font-medium">
+              Other
             </a>
           </div>
         )}
