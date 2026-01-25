@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { trackEvent } from '@/lib/tracking'
+import { trackEvent, trackCookieConsent } from '@/lib/tracking'
 
 export default function Cookiebot() {
   useEffect(() => {
@@ -25,6 +25,7 @@ export default function Cookiebot() {
     // Track when user accepts cookies
     const handleAccept = () => {
       console.log('🍪 Cookiebot accepted - tracking consent')
+      trackCookieConsent()  // Add this back
       trackEvent('cookie_consent_accepted', { consent_type: 'cookie' })
     }
     
