@@ -23,22 +23,17 @@ export default function Cookiebot() {
     }
     
     // Track when user accepts cookies
-    const handleAccept = async () => {
+    const handleAccept = () => {
       console.log('🍪 Cookiebot accepted - tracking consent')
-      
-      // Use dynamic import to avoid Next.js static analysis issues
-      try {
-        const { trackCookieConsent } = await import('@/lib/tracking')
-        await trackCookieConsent()
-      } catch (error) {
-        console.error('Error loading trackCookieConsent:', error)
-      }
-      
-      // Also track as event
-      trackEvent('cookie_consent_accepted', { consent_type: 'cookie' })
+      trackEvent('cookie_consent_accepted', { 
+        consent_type: 'cookie',
+        marketing: window.Cookiebot?.consent?.marketing || false,
+        statistics: window.Cookiebot?.consent?.statistics || false,
+        preferences: window.Cookiebot?.consent?.preferences || false
+      })
     }
     
-    // Optional: Track when user declines cookies
+    // Track when user declines cookies
     const handleDecline = () => {
       console.log('🍪 Cookiebot declined')
       trackEvent('cookie_consent_declined', { consent_type: 'cookie' })
