@@ -6,27 +6,73 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
+// Helper functions for cookie management
+function setCookie(name, value, days) {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+}
+
+function getCookie(name) {
+  const nameEQ = name + "=";
+  const ca = document.cookie.split(';');
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
+}
+
 export function getOrCreateVisitorId() {
   if (typeof window === 'undefined') return null;
   
   const VISITOR_ID_KEY = 'bth_visitor_id';
   const VISITOR_ID_EXPIRY = 'bth_visitor_expiry';
+  const COOKIE_NAME = 'bth_visitor_id';
+  const COOKIE_EXPIRY_NAME = 'bth_visitor_expiry';
   
+  // Try localStorage first
   let visitorId = localStorage.getItem(VISITOR_ID_KEY);
   let expiry = localStorage.getItem(VISITOR_ID_EXPIRY);
   
+  // If localStorage is empty, check cookie as backup
+  if (!visitorId) {
+    visitorId = getCookie(COOKIE_NAME);
+    expiry = getCookie(COOKIE_EXPIRY_NAME);
+    
+    // If found in cookie, restore to localStorage
+    if (visitorId && expiry) {
+      localStorage.setItem(VISITOR_ID_KEY, visitorId);
+      localStorage.setItem(VISITOR_ID_EXPIRY, expiry);
+      console.log('👤 Restored Visitor ID from cookie:', visitorId);
+    }
+  }
+  
+  // Check if existing ID is still valid
   if (visitorId && expiry && Date.now() < parseInt(expiry)) {
     console.log('👤 Existing Visitor ID:', visitorId);
+    
+    // Sync to both storage mechanisms to keep them in sync
+    localStorage.setItem(VISITOR_ID_KEY, visitorId);
+    localStorage.setItem(VISITOR_ID_EXPIRY, expiry);
+    setCookie(COOKIE_NAME, visitorId, 730); // 2 years
+    setCookie(COOKIE_EXPIRY_NAME, expiry, 730);
+    
     return visitorId;
   }
   
+  // Create new visitor ID
   visitorId = crypto.randomUUID();
   const expiryTime = Date.now() + (730 * 24 * 60 * 60 * 1000); // 2 years
   
+  // Store in both localStorage AND cookies
   localStorage.setItem(VISITOR_ID_KEY, visitorId);
   localStorage.setItem(VISITOR_ID_EXPIRY, expiryTime.toString());
+  setCookie(COOKIE_NAME, visitorId, 730); // 2 years
+  setCookie(COOKIE_EXPIRY_NAME, expiryTime.toString(), 730);
   
-  console.log('👤 New Visitor ID Created:', visitorId);
+  console.log('👤 New Visitor ID Created (stored in both localStorage + cookie):', visitorId);
   return visitorId;
 }
 
