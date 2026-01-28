@@ -189,14 +189,14 @@ function LeadCaptureForm() {
 }
 
 export default function Home() {
-  useEffect(() => {
-    const initTracking = async () => {
-      captureUTMParameters()  // Capture UTMs FIRST (synchronous, no await needed)
-      await trackVisitor()  // Wait for visitor to be created
-      await trackPageVisit('Home')  // Then track page visit
-    }
-    initTracking()
-  }, [])
+useEffect(() => {
+  const initTracking = async () => {
+    captureUTMParameters()  // Capture UTMs FIRST (synchronous, no await needed)
+    await trackVisitor()  // Wait for visitor to be created
+    await trackPageVisit('Home')  // Then track page visit
+  }
+  initTracking()
+}, [])
 
   return (
     <>

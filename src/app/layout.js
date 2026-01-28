@@ -19,6 +19,7 @@ export default function RootLayout({ children }) {
           data-blockingmode="auto" 
           type="text/javascript"
         />
+        <meta name="impact-site-verification" value="4e7122fe-e935-47dd-bb6c-683e703dadc9" />
         
         {/* Google Analytics - Will be blocked until consent */}
         <GoogleAnalytics />
